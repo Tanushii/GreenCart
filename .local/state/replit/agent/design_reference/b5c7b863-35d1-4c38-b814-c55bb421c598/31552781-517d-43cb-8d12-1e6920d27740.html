@@ -1,0 +1,1049 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFinds - Sustainable Second-Hand Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(60 9% 98%);
+            --foreground: hsl(24 10% 10%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(24 10% 10%);
+            --primary: hsl(142 76% 36%);
+            --primary-foreground: hsl(355 20% 98%);
+            --secondary: hsl(84 81% 44%);
+            --secondary-foreground: hsl(24 10% 10%);
+            --muted: hsl(60 5% 96%);
+            --muted-foreground: hsl(25 5% 45%);
+            --accent: hsl(142 76% 36%);
+            --accent-foreground: hsl(355 20% 98%);
+            --border: hsl(20 6% 90%);
+            --input: hsl(20 6% 90%);
+            --ring: hsl(142 76% 36%);
+            --radius: 0.75rem;
+        }
+        
+        .dark {
+            --background: hsl(20 14% 4%);
+            --foreground: hsl(60 9% 98%);
+            --card: hsl(20 13% 6%);
+            --card-foreground: hsl(60 9% 98%);
+            --primary: hsl(142 70% 45%);
+            --primary-foreground: hsl(144 61% 20%);
+            --secondary: hsl(84 75% 55%);
+            --secondary-foreground: hsl(20 14% 4%);
+            --muted: hsl(0 0% 15%);
+            --muted-foreground: hsl(24 5% 64%);
+            --accent: hsl(142 70% 45%);
+            --accent-foreground: hsl(144 61% 20%);
+            --border: hsl(12 6% 15%);
+            --input: hsl(12 6% 15%);
+            --ring: hsl(142 70% 45%);
+        }
+
+        .section-hidden { display: none; }
+        .section-active { display: block; }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        
+        .hover-lift:hover { transform: translateY(-2px); }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-card border-b border-border sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-leaf text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-primary">EcoFinds</span>
+                </div>
+                
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-1 max-w-lg mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Search sustainable products..." 
+                               class="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="flex items-center space-x-6">
+                    <button onclick="showSection('home')" class="nav-link text-foreground hover:text-primary transition-colors">
+                        <i class="fas fa-home mr-1"></i>
+                        <span class="hidden sm:inline">Home</span>
+                    </button>
+                    <button onclick="showSection('listings')" class="nav-link text-foreground hover:text-primary transition-colors">
+                        <i class="fas fa-list mr-1"></i>
+                        <span class="hidden sm:inline">My Listings</span>
+                    </button>
+                    <button onclick="showSection('cart')" class="nav-link text-foreground hover:text-primary transition-colors relative">
+                        <i class="fas fa-shopping-cart mr-1"></i>
+                        <span class="hidden sm:inline">Cart</span>
+                        <span class="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full text-xs w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    <button onclick="showSection('orders')" class="nav-link text-foreground hover:text-primary transition-colors">
+                        <i class="fas fa-box mr-1"></i>
+                        <span class="hidden sm:inline">Orders</span>
+                    </button>
+                    <button onclick="showSection('profile')" class="nav-link text-foreground hover:text-primary transition-colors">
+                        <i class="fas fa-user mr-1"></i>
+                        <span class="hidden sm:inline">Profile</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Search -->
+            <div class="md:hidden pb-4">
+                <div class="relative">
+                    <input type="text" placeholder="Search sustainable products..." 
+                           class="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section-active">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-primary/10 to-secondary/10 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-foreground mb-6">
+                    Discover <span class="text-primary">Sustainable</span> Treasures
+                </h1>
+                <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                    Find quality second-hand items while reducing environmental impact. Shop conscious, live sustainable.
+                </p>
+                <button class="bg-primary text-primary-foreground px-8 py-3 rounded-lg text-lg font-semibold hover:bg-primary/90 transition-colors">
+                    Start Shopping
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-wrap gap-4 items-center">
+                <h2 class="text-lg font-semibold">Filter by Category:</h2>
+                <button class="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium">All</button>
+                <button class="px-4 py-2 bg-muted text-foreground rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors">Electronics</button>
+                <button class="px-4 py-2 bg-muted text-foreground rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors">Clothes</button>
+                <button class="px-4 py-2 bg-muted text-foreground rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors">Books</button>
+                <button class="px-4 py-2 bg-muted text-foreground rounded-lg font-medium hover:bg-primary hover:text-primary-foreground transition-colors">Furniture</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Product Card 1 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer" onclick="showSection('product-detail')">
+                    <!-- Modern minimal laptop with clean design on a white desk -->
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="MacBook Pro" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">MacBook Pro 13" 2019</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Excellent condition, barely used</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹65,000</span>
+                            <span class="bg-secondary/20 text-secondary px-2 py-1 rounded text-xs font-medium">Electronics</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer">
+                    <!-- Stylish vintage leather jacket hanging on a clothing rack -->
+                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Leather Jacket" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Vintage Leather Jacket</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Premium quality, size M</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹3,500</span>
+                            <span class="bg-accent/20 text-accent px-2 py-1 rounded text-xs font-medium">Clothes</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer">
+                    <!-- Stack of classic literature books with vintage covers -->
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Classic Books" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Classic Literature Set</h3>
+                        <p class="text-muted-foreground text-sm mb-2">5 classic novels in good condition</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹1,200</span>
+                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-medium">Books</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer">
+                    <!-- Modern mid-century wooden dining chair in a bright room -->
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Dining Chair" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Mid-Century Dining Chair</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Solid wood, excellent craftsmanship</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹4,500</span>
+                            <span class="bg-orange-100 text-orange-600 px-2 py-1 rounded text-xs font-medium">Furniture</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer">
+                    <!-- Professional DSLR camera with lens on a clean surface -->
+                    <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="DSLR Camera" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Canon EOS 80D</h3>
+                        <p class="text-muted-foreground text-sm mb-2">With 18-55mm lens, excellent condition</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹42,000</span>
+                            <span class="bg-secondary/20 text-secondary px-2 py-1 rounded text-xs font-medium">Electronics</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden hover-lift transition-all cursor-pointer">
+                    <!-- Elegant vintage dress on a hanger with soft lighting -->
+                    <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Vintage Dress" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Vintage Floral Dress</h3>
+                        <p class="text-muted-foreground text-sm mb-2">1960s style, size S, pristine</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-primary font-bold text-xl">₹2,800</span>
+                            <span class="bg-accent/20 text-accent px-2 py-1 rounded text-xs font-medium">Clothes</span>
+                        </div>
+                        <button class="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Section -->
+    <section id="product-detail" class="section-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <button onclick="showSection('home')" class="mb-6 text-primary hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Products
+            </button>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Product Image -->
+                <div>
+                    <!-- Modern minimal laptop with clean design on a white desk -->
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+                         alt="MacBook Pro" class="w-full rounded-xl shadow-lg">
+                </div>
+                
+                <!-- Product Info -->
+                <div>
+                    <h1 class="text-3xl font-bold mb-4">MacBook Pro 13" 2019</h1>
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-3xl font-bold text-primary">₹65,000</span>
+                        <span class="bg-secondary/20 text-secondary px-3 py-1 rounded-lg font-medium">Electronics</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-2">Description</h3>
+                        <p class="text-muted-foreground leading-relaxed">
+                            This MacBook Pro 13" from 2019 is in excellent condition with barely any signs of use. 
+                            Features Intel Core i5 processor, 8GB RAM, 256GB SSD. Perfect for students, professionals, 
+                            and creatives. Comes with original charger and box. No scratches or dents, screen is pristine.
+                        </p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-2">Specifications</h3>
+                        <ul class="text-muted-foreground space-y-1">
+                            <li>• Intel Core i5 8th Gen Processor</li>
+                            <li>• 8GB LPDDR3 RAM</li>
+                            <li>• 256GB SSD Storage</li>
+                            <li>• 13.3" Retina Display</li>
+                            <li>• macOS Big Sur</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-2">Seller Information</h3>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium" data-mock="true">Rahul Sharma</p>
+                                <p class="text-sm text-muted-foreground">Member since 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button class="flex-1 bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                            <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                        </button>
+                        <button class="px-6 py-3 border border-border rounded-lg font-semibold hover:bg-muted transition-colors">
+                            <i class="fas fa-heart mr-2"></i>Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Listings Section -->
+    <section id="listings" class="section-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold">My Listings</h1>
+                <button onclick="showAddListing()" class="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add New Listing
+                </button>
+            </div>
+
+            <!-- Add New Listing Form (Initially Hidden) -->
+            <div id="add-listing-form" class="bg-card rounded-xl shadow-lg border border-border p-6 mb-8 hidden">
+                <h2 class="text-xl font-semibold mb-4">Add New Listing</h2>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Product Title</label>
+                        <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter product title">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Description</label>
+                        <textarea rows="3" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Describe your product"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Category</label>
+                            <select class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option>Electronics</option>
+                                <option>Clothes</option>
+                                <option>Books</option>
+                                <option>Furniture</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Price (₹)</label>
+                            <input type="number" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Product Image</label>
+                        <div class="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-muted-foreground mb-4"></i>
+                            <p class="text-muted-foreground">Drag & drop image here or click to browse</p>
+                            <input type="file" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors">Save Listing</button>
+                        <button type="button" onclick="hideAddListing()" class="px-6 py-2 border border-border rounded-lg font-semibold hover:bg-muted transition-colors">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- My Listings Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- User's Listing 1 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                    <!-- Smartphone with modern design on a clean surface -->
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="iPhone 12" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">iPhone 12 - 128GB</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Mint condition, includes box</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-primary font-bold text-xl">₹45,000</span>
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-medium">Active</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-muted text-foreground py-2 rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button class="flex-1 bg-red-50 text-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User's Listing 2 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                    <!-- Professional gaming headset with RGB lighting -->
+                    <img src="https://images.unsplash.com/photo-1599669454699-248893623440?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Gaming Headset" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Gaming Headset RGB</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Perfect for gaming, barely used</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-primary font-bold text-xl">₹2,500</span>
+                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs font-medium">Pending</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-muted text-foreground py-2 rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button class="flex-1 bg-red-50 text-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User's Listing 3 -->
+                <div class="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                    <!-- Stack of technical programming books on a desk -->
+                    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" alt="Programming Books" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">Programming Books Set</h3>
+                        <p class="text-muted-foreground text-sm mb-2">Complete web development collection</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-primary font-bold text-xl">₹3,200</span>
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-medium">Active</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-muted text-foreground py-2 rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button class="flex-1 bg-red-50 text-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section id="cart" class="section-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2">
+                    <!-- Cart Item 1 -->
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6 mb-4">
+                        <div class="flex items-center gap-4">
+                            <!-- Modern minimal laptop with clean design on a white desk -->
+                            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="MacBook Pro" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="font-semibold">MacBook Pro 13" 2019</h3>
+                                <p class="text-muted-foreground text-sm">Electronics</p>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <div class="flex items-center gap-2">
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">-</button>
+                                        <span class="w-8 text-center">1</span>
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">+</button>
+                                    </div>
+                                    <span class="text-primary font-bold">₹65,000</span>
+                                </div>
+                            </div>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item 2 -->
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6 mb-4">
+                        <div class="flex items-center gap-4">
+                            <!-- Stylish vintage leather jacket hanging on a clothing rack -->
+                            <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Leather Jacket" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="font-semibold">Vintage Leather Jacket</h3>
+                                <p class="text-muted-foreground text-sm">Clothes</p>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <div class="flex items-center gap-2">
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">-</button>
+                                        <span class="w-8 text-center">1</span>
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">+</button>
+                                    </div>
+                                    <span class="text-primary font-bold">₹3,500</span>
+                                </div>
+                            </div>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Item 3 -->
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6">
+                        <div class="flex items-center gap-4">
+                            <!-- Stack of classic literature books with vintage covers -->
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Classic Books" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="font-semibold">Classic Literature Set</h3>
+                                <p class="text-muted-foreground text-sm">Books</p>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <div class="flex items-center gap-2">
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">-</button>
+                                        <span class="w-8 text-center">1</span>
+                                        <button class="w-8 h-8 border border-border rounded-md flex items-center justify-center hover:bg-muted">+</button>
+                                    </div>
+                                    <span class="text-primary font-bold">₹1,200</span>
+                                </div>
+                            </div>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-card rounded-xl shadow-lg border border-border p-6 h-fit">
+                    <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span>Subtotal (3 items)</span>
+                            <span>₹69,700</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tax</span>
+                            <span>₹697</span>
+                        </div>
+                        <hr class="border-border">
+                        <div class="flex justify-between text-lg font-bold">
+                            <span>Total</span>
+                            <span class="text-primary">₹70,397</span>
+                        </div>
+                    </div>
+                    <button onclick="showSection('checkout')" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                        Proceed to Checkout
+                    </button>
+                    <p class="text-xs text-muted-foreground mt-2 text-center">
+                        By proceeding, you agree to our Terms & Conditions
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section id="checkout" class="section-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Payment Methods -->
+                <div>
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6">
+                        <h3 class="text-xl font-semibold mb-4">Payment Method</h3>
+                        
+                        <!-- Card Payment -->
+                        <div class="mb-4">
+                            <label class="flex items-center p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/50">
+                                <input type="radio" name="payment" value="card" checked class="mr-3">
+                                <i class="fas fa-credit-card text-blue-600 mr-3"></i>
+                                <span class="font-medium">Credit/Debit Card</span>
+                            </label>
+                        </div>
+
+                        <!-- UPI Payment -->
+                        <div class="mb-4">
+                            <label class="flex items-center p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/50">
+                                <input type="radio" name="payment" value="upi" class="mr-3">
+                                <i class="fas fa-mobile-alt text-purple-600 mr-3"></i>
+                                <span class="font-medium">UPI Payment</span>
+                            </label>
+                        </div>
+
+                        <!-- COD Payment -->
+                        <div class="mb-6">
+                            <label class="flex items-center p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/50">
+                                <input type="radio" name="payment" value="cod" class="mr-3">
+                                <i class="fas fa-money-bill-wave text-green-600 mr-3"></i>
+                                <span class="font-medium">Cash on Delivery</span>
+                            </label>
+                        </div>
+
+                        <!-- Card Details Form -->
+                        <div id="card-form">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Card Number</label>
+                                    <input type="text" placeholder="1234 5678 9012 3456" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Expiry Date</label>
+                                        <input type="text" placeholder="MM/YY" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">CVV</label>
+                                        <input type="text" placeholder="123" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Cardholder Name</label>
+                                    <input type="text" placeholder="John Doe" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6 mt-6">
+                        <h3 class="text-xl font-semibold mb-4">Shipping Address</h3>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">First Name</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Last Name</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Address</label>
+                                <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">City</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">PIN Code</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div>
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6">
+                        <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+                        
+                        <!-- Order Items -->
+                        <div class="space-y-3 mb-4">
+                            <div class="flex justify-between">
+                                <span class="text-sm">MacBook Pro 13" 2019 × 1</span>
+                                <span class="text-sm font-medium">₹65,000</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm">Vintage Leather Jacket × 1</span>
+                                <span class="text-sm font-medium">₹3,500</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm">Classic Literature Set × 1</span>
+                                <span class="text-sm font-medium">₹1,200</span>
+                            </div>
+                        </div>
+                        
+                        <hr class="border-border mb-4">
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between">
+                                <span>Subtotal</span>
+                                <span>₹69,700</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Shipping</span>
+                                <span class="text-green-600">Free</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tax</span>
+                                <span>₹697</span>
+                            </div>
+                            <hr class="border-border">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span class="text-primary">₹70,397</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="processPayment()" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Orders Section -->
+    <section id="orders" class="section-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">My Orders</h1>
+            
+            <!-- Order 1 -->
+            <div class="bg-card rounded-xl shadow-lg border border-border p-6 mb-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Order #ECO-2024-001</h3>
+                        <p class="text-muted-foreground">Placed on January 15, 2024</p>
+                    </div>
+                    <div class="mt-2 lg:mt-0">
+                        <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-shipping-fast mr-1"></i>Out for Delivery
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Delivery Progress -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium">Delivery Progress</span>
+                        <span class="text-sm text-muted-foreground">Expected: Jan 18, 2024</span>
+                    </div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Ordered</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-primary mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Shipped</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-primary mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+                                <span class="text-xs mt-1">Out for Delivery</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-muted mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-muted rounded-full"></div>
+                                <span class="text-xs mt-1">Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4">
+                        <!-- Modern minimal laptop with clean design on a white desk -->
+                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="MacBook Pro" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-medium">MacBook Pro 13" 2019</h4>
+                            <p class="text-muted-foreground text-sm">Quantity: 1</p>
+                        </div>
+                        <span class="font-bold">₹65,000</span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-border">
+                    <span class="font-semibold">Total: ₹65,697</span>
+                    <button class="text-primary hover:underline">Track Order</button>
+                </div>
+            </div>
+
+            <!-- Order 2 -->
+            <div class="bg-card rounded-xl shadow-lg border border-border p-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Order #ECO-2024-002</h3>
+                        <p class="text-muted-foreground">Placed on January 10, 2024</p>
+                    </div>
+                    <div class="mt-2 lg:mt-0">
+                        <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-check mr-1"></i>Delivered
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Delivery Progress -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium">Delivered on Jan 12, 2024</span>
+                        <span class="text-sm text-green-600">✓ Complete</span>
+                    </div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Ordered</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-primary mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Shipped</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-primary mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Out for Delivery</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-primary mx-2"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                <span class="text-xs mt-1">Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4">
+                        <!-- Stylish vintage leather jacket hanging on a clothing rack -->
+                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="Leather Jacket" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-medium">Vintage Leather Jacket</h4>
+                            <p class="text-muted-foreground text-sm">Quantity: 1</p>
+                        </div>
+                        <span class="font-bold">₹3,500</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- Stack of classic literature books with vintage covers -->
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80" alt="Classic Books" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-medium">Classic Literature Set</h4>
+                            <p class="text-muted-foreground text-sm">Quantity: 1</p>
+                        </div>
+                        <span class="font-bold">₹1,200</span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-border">
+                    <span class="font-semibold">Total: ₹4,747</span>
+                    <button class="text-primary hover:underline">Reorder Items</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold mb-8">My Profile</h1>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Profile Card -->
+                <div class="lg:col-span-1">
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6 text-center">
+                        <div class="w-24 h-24 bg-primary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2" data-mock="true">John Doe</h3>
+                        <p class="text-muted-foreground" data-mock="true">john.doe@example.com</p>
+                        <p class="text-sm text-muted-foreground mt-2">Member since 2023</p>
+                        
+                        <div class="mt-6 pt-6 border-t border-border">
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div>
+                                    <div class="text-2xl font-bold text-primary">15</div>
+                                    <div class="text-xs text-muted-foreground">Items Sold</div>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-secondary">28</div>
+                                    <div class="text-xs text-muted-foreground">Items Bought</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Settings -->
+                <div class="lg:col-span-2">
+                    <div class="bg-card rounded-xl shadow-lg border border-border p-6">
+                        <h3 class="text-xl font-semibold mb-6">Profile Settings</h3>
+                        
+                        <form class="space-y-6">
+                            <!-- Personal Information -->
+                            <div>
+                                <h4 class="font-medium mb-4">Personal Information</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">First Name</label>
+                                        <input type="text" value="John" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Last Name</label>
+                                        <input type="text" value="Doe" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium mb-2">Email Address</label>
+                                    <input type="email" value="john.doe@example.com" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium mb-2">Phone Number</label>
+                                    <input type="tel" value="+91 9876543210" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div>
+                                <h4 class="font-medium mb-4">Default Address</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Street Address</label>
+                                        <input type="text" value="123 Green Street" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">City</label>
+                                            <input type="text" value="Mumbai" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">PIN Code</label>
+                                            <input type="text" value="400001" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Password Change -->
+                            <div>
+                                <h4 class="font-medium mb-4">Change Password</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Current Password</label>
+                                        <input type="password" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">New Password</label>
+                                            <input type="password" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-2">Confirm Password</label>
+                                            <input type="password" class="w-full px-3 py-2 border border-border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <button type="submit" class="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                                    Save Changes
+                                </button>
+                                <button type="button" class="px-6 py-2 border border-border rounded-lg font-semibold hover:bg-muted transition-colors">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Simple navigation system
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('section-active');
+                section.classList.add('section-hidden');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('section-hidden');
+                targetSection.classList.add('section-active');
+            }
+        }
+
+        function showAddListing() {
+            const form = document.getElementById('add-listing-form');
+            form.classList.remove('hidden');
+        }
+
+        function hideAddListing() {
+            const form = document.getElementById('add-listing-form');
+            form.classList.add('hidden');
+        }
+
+        function processPayment() {
+            // Simulate payment processing
+            alert('Payment processed successfully! Redirecting to orders...');
+            showSection('orders');
+        }
+
+        // TODO: Implement real authentication, API calls, and state management
+        // TODO: Add form validation and error handling
+        // TODO: Implement real payment gateway integration
+        // TODO: Add real-time delivery tracking updates
+        // TODO: Implement image upload functionality
+        // TODO: Add search and filter functionality
+        // TODO: Implement cart state management
+    </script>
+</body>
+</html>
