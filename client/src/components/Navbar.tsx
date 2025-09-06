@@ -1,28 +1,56 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { CartItemWithProduct } from "@shared/schema";
 import { useLocation } from "wouter";
+import AuthModal from "./AuthModal";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Navbar() {
   const { isAuthenticated } = useAuth();
   const [location, navigate] = useLocation();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: cartItems = [] } = useQuery<CartItemWithProduct[]>({
     queryKey: ["/api/cart"],
     enabled: isAuthenticated,
   });
 
-  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartItemCount = cartItems.reduce((sum: number, item: CartItemWithProduct) => sum + item.quantity, 0);
 
-  const navItems = [
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      toast({ title: "Success", description: "Logged out successfully!" });
+      navigate("/");
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Logout failed" });
+    },
+  });
+
+  const navItems = isAuthenticated ? [
     { path: "/", icon: "fas fa-home", label: "Home", testId: "nav-home" },
     { path: "/listings", icon: "fas fa-list", label: "My Listings", testId: "nav-listings" },
     { path: "/cart", icon: "fas fa-shopping-cart", label: "Cart", testId: "nav-cart", badge: cartItemCount },
     { path: "/orders", icon: "fas fa-box", label: "Orders", testId: "nav-orders" },
     { path: "/profile", icon: "fas fa-user", label: "Profile", testId: "nav-profile" },
+  ] : [
+    { path: "/", icon: "fas fa-home", label: "Home", testId: "nav-home" },
   ];
 
   return (
@@ -75,6 +103,32 @@ export default function Navbar() {
                 )}
               </Button>
             ))}
+            
+            {/* Auth buttons */}
+            {isAuthenticated ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+                data-testid="logout-btn"
+              >
+                <i className="fas fa-sign-out-alt mr-1 sm:mr-2"></i>
+                <span className="hidden sm:inline">
+                  {logoutMutation.isPending ? "Logging out..." : "Logout"}
+                </span>
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setShowAuthModal(true)}
+                data-testid="login-btn"
+              >
+                <i className="fas fa-sign-in-alt mr-1 sm:mr-2"></i>
+                <span className="hidden sm:inline">Login</span>
+              </Button>
+            )}
           </div>
         </div>
         
@@ -91,6 +145,11 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthModal onClose={() => setShowAuthModal(false)} />
+      )}
     </nav>
   );
 }

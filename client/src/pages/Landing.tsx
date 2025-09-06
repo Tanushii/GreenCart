@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import AuthModal from "@/components/AuthModal";
 
 export default function Landing() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const handleLogin = () => {
-    window.location.href = "/api/login";
+    setShowAuthModal(true);
   };
 
   return (
@@ -78,6 +82,11 @@ export default function Landing() {
           </Card>
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <AuthModal onClose={() => setShowAuthModal(false)} />
+      )}
     </div>
   );
 }

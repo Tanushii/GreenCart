@@ -36,12 +36,9 @@ export default function ProductDetail() {
       if (isUnauthorizedError(error)) {
         toast({
           title: "Unauthorized",
-          description: "You need to be logged in. Redirecting...",
+          description: "You need to be logged in to add items to cart.",
           variant: "destructive",
         });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
         return;
       }
       toast({
