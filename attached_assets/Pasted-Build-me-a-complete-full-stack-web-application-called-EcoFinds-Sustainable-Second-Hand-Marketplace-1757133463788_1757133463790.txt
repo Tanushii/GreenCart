@@ -1,0 +1,75 @@
+Build me a complete full-stack web application called EcoFinds – Sustainable Second-Hand Marketplace, similar to a lightweight Amazon clone, with the following requirements:
+
+Core Features
+
+Authentication
+
+Email + password signup/login with secure hashing.
+
+Google login (OAuth).
+
+User dashboard to edit username, email, and profile image.
+
+Product Listings (CRUD)
+
+Users can add/edit/delete their own listings.
+
+Each listing has title, description, category (dropdown: Electronics, Clothes, Books, Furniture), price, and one image placeholder.
+
+Product feed page with search + category filter.
+
+Product detail page with image, description, price, category.
+
+Cart + Purchase Flow
+
+Add/remove products from cart.
+
+Cart page showing items in card format with total price.
+
+“Proceed to Payment” → fake payment gateway screen (Card, UPI, COD).
+
+On success → order confirmed and items move to Previous Purchases.
+
+Delivery Tracking
+
+Assign a random delivery date (3–7 days).
+
+Show delivery updates: Ordered → Shipped → Out for Delivery → Delivered.
+
+Status auto-updates every few seconds or based on mock timers.
+
+Previous Purchases
+
+Show purchased items in a separate list with delivery status + date.
+
+UI/UX Requirements
+
+Responsive (desktop + mobile).
+
+Modern clean design: cards, rounded corners, soft shadows.
+
+Navigation bar with Home, My Listings, Cart, Profile, Orders.
+
+Search bar + category filter on the homepage.
+
+Smooth transitions and a professional layout.
+
+Tech Stack
+
+Frontend: React (with TailwindCSS for UI, shadcn/ui for components, framer-motion for animations).
+
+Backend: Node.js + Express.
+
+Database: MongoDB (for users, products, orders).
+
+Auth: JWT for email login, Google OAuth for Gmail login.
+
+Extra Notes
+
+Keep it well structured with clear folders (/frontend, /backend).
+
+Include seed data so that some products appear by default.
+
+Delivery tracking can be simulated with timers or mock updates.
+
+Make it easy to run on Replit (all dependencies + setup instructions in README).
